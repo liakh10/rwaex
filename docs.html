@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="config.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rwaex Docs</title>
+<meta name="description" content="How Rwaex works: build a floating island of machines, fuel it, pick where power goes and get paid in real NVDA and GLD Stock Tokens every day on Robinhood Chain" />
+<link rel="icon" type="image/png" href="/assets/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Nunito:wght@600;800&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#dff1f7;--panel:#fffaf0;--ink:#0f2a3d;--dim:#55707f;--line:#cfe3c9;--acc:#2f8a4b;--acc2:#ffcc4d;--disp:"Titan One",sans-serif;--mono:"Nunito",sans-serif;--pad:clamp(16px,3vw,40px);--r:16px;--rs:22px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:14px;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none} img{display:block;max-width:100%}
+.top{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px var(--pad);background:rgba(255,250,240,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:700;font-size:16px}
+.brand img{width:28px;height:28px;border-radius:6px}
+.brand small{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--acc);font-weight:400}
+.top nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.key{display:inline-flex;align-items:center;gap:8px;font-family:var(--disp);font-weight:700;font-size:12px;letter-spacing:.08em;padding:9px 14px;border-radius:var(--r);color:var(--ink);border:1px solid var(--line);background:var(--panel);white-space:nowrap}
+.key.buy{background:var(--acc);color:#0f2a3d;border-color:var(--acc)}
+.key.crumb{background:var(--acc2);color:#0f2a3d;border-color:var(--acc2);cursor:default}
+.key img{width:14px;height:14px;object-fit:contain}
+.shell{display:grid;grid-template-columns:240px minmax(0,1fr);gap:clamp(24px,4vw,60px);width:min(1180px,100%);margin:0 auto;padding:36px var(--pad) 90px}
+.side{position:sticky;top:84px;align-self:start;display:flex;flex-direction:column;gap:4px}
+.kick{font-size:10px;letter-spacing:.34em;color:var(--acc);margin-bottom:10px;text-transform:uppercase}
+.side a{font-family:var(--disp);font-weight:600;font-size:13px;padding:8px 12px;border-radius:var(--r);color:var(--dim)}
+.side a:hover{color:var(--ink)} .side a.on{color:var(--ink);background:var(--panel);border:1px solid var(--line)}
+.hero{margin-bottom:26px}
+.hero h1{font-family:var(--disp);font-weight:800;font-size:clamp(38px,6vw,72px);line-height:.95;letter-spacing:0}
+.hero h1 em{font-style:normal;color:var(--acc)}
+.hero p{margin-top:12px;line-height:1.6;color:var(--dim);max-width:60ch;white-space:pre-line}
+.sec{background:var(--panel);border:1px solid var(--line);border-radius:var(--rs);padding:clamp(20px,3vw,32px);margin-bottom:18px}
+.sec h2{font-family:var(--disp);font-weight:800;font-size:clamp(22px,3vw,32px);line-height:1;margin-bottom:14px}
+.sec h2 i{font-style:normal;font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.3em;color:var(--acc);display:block;margin-bottom:8px}
+.sec p{line-height:1.65;max-width:72ch} .sec p + p{margin-top:8px}
+.rows{display:grid;margin-top:14px;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:170px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);line-height:1.55}
+.row dt{font-size:10px;letter-spacing:.24em;color:var(--dim);padding-top:3px;text-transform:uppercase}
+.tree{margin-top:12px;font-family:var(--mono);font-size:13px;line-height:1.8;white-space:pre;overflow-x:auto;padding:12px 14px;background:var(--bg);border:1px solid var(--line);border-radius:var(--rs)}
+.tree b{color:var(--acc);font-weight:500}
+.ca{display:inline-flex;align-items:center;gap:12px;max-width:100%;padding:12px 16px;margin-top:14px;background:var(--bg);border:1px solid var(--acc);border-radius:var(--rs)}
+.ca small{font-size:9px;letter-spacing:.32em;color:var(--dim);white-space:nowrap}
+.ca b{font-family:var(--mono);font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ca .copy{display:none;font:inherit;font-family:var(--disp);font-weight:700;font-size:11px;letter-spacing:.14em;padding:7px 12px;border-radius:var(--r);background:var(--acc);color:#0f2a3d;border:0;cursor:pointer}
+.ca.live{cursor:pointer} .ca.live .copy{display:inline-block} .ca.live b{color:var(--acc)}
+.links{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.faq{display:grid;gap:10px;margin-top:12px}
+.faq div{padding:12px 14px;border-radius:var(--rs);background:var(--bg);border:1px solid var(--line)}
+.faq b{font-family:var(--disp);font-weight:700;font-size:15px;display:block;margin-bottom:4px}
+.faq span{line-height:1.6;color:var(--dim)}
+.foot{width:min(1180px,100%);margin:0 auto;padding:0 var(--pad) 40px;font-size:10px;letter-spacing:.22em;color:var(--dim);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;text-transform:uppercase}
+@media (max-width:820px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:18px;padding-top:20px} main{min-width:0}
+  .side{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:6px;scrollbar-width:none} .side .kick{display:none}
+  .side a{white-space:nowrap;font-size:12px;padding:7px 11px}
+  .row{grid-template-columns:1fr;gap:4px} .top nav .key{padding:8px 10px;font-size:11px;gap:5px} .brand span{display:none}
+  .ca{width:100%;flex-wrap:wrap;gap:5px 10px} .ca small{width:100%} .ca b{width:100%;font-size:clamp(9px,2.7vw,13px)} .ca .copy{width:100%;text-align:center}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="/"><img src="/assets/favicon.png" alt="" /><span>RWAEX</span><small>DOCS</small></a>
+  <nav>
+    <a class="key" href="/"><span>PLAY</span></a>
+    <a class="key buy" data-link="pons" href="https://www.ponsfamily.com/launchpad"><img src="assets/img/pons.png" alt="" style="filter:brightness(0)" /><span>BUY</span></a>
+    <a class="key" data-link="x" href="https://x.com"><span>X</span></a>
+    <span class="key crumb">DOCS</span>
+  </nav>
+</header>
+<div class="shell">
+  <aside class="side"><span class="kick">Field manual</span><a href="#what" class=on>What is this</a><a href="#island">Your island</a><a href="#machines">Machines</a><a href="#fuel">Fuel</a><a href="#routes">Routes</a><a href="#payday">Payday</a><a href="#pool">The pool</a><a href="#eligible">Eligibility</a><a href="#token">$RWAEX</a><a href="#faq">FAQ</a></aside>
+  <main>
+    <div class="hero"><h1>RWA<em>EX</em> DOCS</h1><p>A cozy island builder on Robinhood Chain. Machines make power, power becomes points, and every payday the pool buys real Stock Tokens and pays the islands</p></div>
+    <section id="what" class="sec"><h2><i>01 · overview</i>An island that pays in stocks</h2><p>Rwaex is a browser game. You claim a floating island with your wallet, build machines on its pads and keep them running. Machines make power; you choose whether power turns into coins for building or into NVDA and GLD points. Every day at 00:00 UTC the reward pool buys real Robinhood Stock Tokens and sends them to the islands that earned points.</p><p>The island itself lives on the Rwaex server, so building and collecting cost no gas. Payouts are real token transfers on Robinhood Chain from the payday wallet, each one with a public transaction.</p><dl class="rows"><div class="row"><dt>Chain</dt><dd>Robinhood Chain mainnet, chain id 4663</dd></div><div class="row"><dt>Rewards</dt><dd>NVDA and GLD Stock Tokens</dd></div><div class="row"><dt>Sign-in</dt><dd>a signed message, no transaction and no gas</dd></div><div class="row"><dt>Game state</dt><dd>Rwaex server, one island per wallet</dd></div><div class="row"><dt>Payouts</dt><dd>on-chain transfers every day after 00:00 UTC</dd></div></dl></section><section id="island" class="sec"><h2><i>02 · build</i>Vault, pads and storage</h2><p>Every island starts with a level 1 vault in the centre, a gold mine and 100 coins. The vault opens pads as it levels up and adds offline storage.</p><pre class="tree">├── <b>level 1     </b>4 pads open, 4 hours of storage
+├── <b>level 2     </b>6 pads, 6 hours, upgrade for 600 coins
+├── <b>level 3     </b>8 pads, 8 hours, upgrade for 2,400 coins
+├── <b>storage     </b>machines stop producing once the hours since your last collect run out; collect to start again
+├── <b>removing    </b>any machine except the vault, half its price back</pre></section><section id="machines" class="sec"><h2><i>03 · catalog</i>What you can build</h2><dl class="rows"><div class="row"><dt>Gold Mine · 80</dt><dd>4 power an hour, needs nothing</dd></div><div class="row"><dt>Oil Derrick · 300</dt><dd>12 power an hour, burns 1 fuel an hour</dd></div><div class="row"><dt>Warehouse · 200</dt><dd>+2 hours of storage and +10 fuel tank</dd></div><div class="row"><dt>Stock Press · 700</dt><dd>turns up to 8 power an hour into NVDA points</dd></div><div class="row"><dt>Bullion Refinery · 700</dt><dd>turns up to 8 power an hour into GLD points</dd></div></dl></section><section id="fuel" class="sec"><h2><i>04 · keep it running</i>Fuel crates</h2><p>Derricks need fuel. A free crate arrives every 8 hours. Wallets holding at least 1,000,000 $RWAEX get double crates.</p><pre class="tree">├── <b>crate          </b>10 fuel, 20 for holders
+├── <b>every          </b>8 hours
+├── <b>tank           </b>30 fuel, +10 per warehouse
+├── <b>out of fuel    </b>derricks stop, mines keep digging</pre></section><section id="routes" class="sec"><h2><i>05 · choose</i>Where power goes</h2><p>Your route decides what all of the island's power becomes. You can change it once per day; it unlocks again at payday.</p><dl class="rows"><div class="row"><dt>Sell to grid</dt><dd>1 coin per power</dd></div><div class="row"><dt>Stock Press</dt><dd>NVDA points, limited by your presses at 8 per hour each</dd></div><div class="row"><dt>Bullion Refinery</dt><dd>GLD points, limited by your refineries at 8 per hour each</dd></div><div class="row"><dt>Overflow</dt><dd>power a converter cannot take is sold to the grid at 25%</dd></div></dl><p>Points count on the day you collect them. Collect before 00:00 UTC to have them in that day's payday.</p></section><section id="payday" class="sec"><h2><i>06 · 00:00 UTC</i>Paid in real stocks</h2><p>After midnight UTC the payday service closes the day and pays it out:</p><pre class="tree">├── <b>pool          </b>the payday wallet balance minus 0.003 ETH kept for gas
+├── <b>split         </b>the pool is split between NVDA and GLD in proportion to all eligible points on each route
+├── <b>buy NVDA      </b>in the native-ETH Uniswap v4 NVDA pool
+├── <b>buy GLD       </b>through Uniswap v3, WETH to USDG to GLD
+├── <b>pay           </b>the top 150 islands on each route, pro-rata to their points
+├── <b>small pool    </b>under 0.002 ETH it rolls into the next payday</pre><p>Every payday is listed in the game with its swap transactions, and your own payouts show up with links to each transfer.</p></section><section id="pool" class="sec"><h2><i>07 · funding</i>Where the money comes from</h2><p>$RWAEX launches on Pons with the payday wallet as its creator fee recipient. The payday service claims those fees from the Pons fee escrow on every run and pays them out as stocks. Anyone can also send ETH to the payday wallet to grow a payday. The wallet address is shown in the game.</p></section><section id="eligible" class="sec"><h2><i>08 · rules</i>Who gets paid</h2><dl class="rows"><div class="row"><dt>Before $RWAEX launches</dt><dd>points count, but the pool is empty</dd></div><div class="row"><dt>After launch</dt><dd>wallets holding at least 1,000,000 $RWAEX when payday runs</dd></div><div class="row"><dt>Per route</dt><dd>top 150 islands by points</dd></div><div class="row"><dt>Rate limits</dt><dd>one island per wallet, actions limited per minute, production is computed from time on the server</dd></div></dl></section><section id="token" class="sec"><h2><i>09 · token</i>The token</h2><p>Rwaex is a token on Robinhood Chain, launched through Pons. There is one contract, it lives in config.js on GitHub, and the site reads it from there.</p><dl class="rows"><div class="row"><dt>Chain</dt><dd>Robinhood Chain, EVM</dd></div><div class="row"><dt>Launchpad</dt><dd>Pons</dd></div><div class="row"><dt>Ticker</dt><dd>$RWAEX</dd></div><div class="row"><dt>Role</dt><dd>creator fees fund the daily payday, holders get paid and double fuel</dd></div></dl><div class="ca" id="ca"><small>CONTRACT</small><b id="caVal">SOON</b><button class="copy" id="caCopy">COPY</button></div><div class="links"><a class="key buy" data-link="pons" href="https://www.ponsfamily.com/launchpad">Buy on Pons</a><a class="key" data-link="dex" href="https://dexscreener.com/robinhood">Chart</a><a class="key" data-link="x" href="https://x.com">X</a></div></section><section id="faq" class="sec"><h2><i>10 · questions</i>Questions</h2><div class="faq"><div><b>Does building cost gas?</b><span>No. The game runs on the Rwaex server; only payouts are on-chain.</span></div><div><b>Why did my island stop?</b><span>Storage ran out. Open the game and press Collect.</span></div><div><b>I produced points but got nothing</b><span>You need to hold 1,000,000 $RWAEX at payday, be in the top 150 of your route, and the pool must be at least 0.002 ETH.</span></div><div><b>Can I switch to the press right after picking the grid?</b><span>Not the same day. The route unlocks at payday.</span></div><div><b>What are Stock Tokens?</b><span>Tokenised debt securities issued by Robinhood that track a share price. They are not the shares themselves and are restricted in some jurisdictions, including the US.</span></div></div></section>
+  </main>
+</div>
+<div class="foot"><span>Rwaex</span><span>Robinhood Chain · Pons</span></div>
+<script>
+(function(){
+  var S = window.SITE, CA = (S.CA||"SOON").trim(), HAS = CA !== "SOON" && CA !== "";
+  document.querySelectorAll('[data-link="pons"]').forEach(function(a){ a.href = HAS ? window.PONS_HOME + '/' + CA : window.PONS_HOME; a.target='_blank'; a.rel='noopener'; });
+  document.querySelectorAll('[data-link="dex"]').forEach(function(a){ a.href = HAS ? window.DEX_HOME + '/' + CA : window.DEX_HOME; a.target='_blank'; a.rel='noopener'; });
+  document.querySelectorAll('[data-link="x"]').forEach(function(a){ a.href = S.X_URL || 'https://x.com'; a.target='_blank'; a.rel='noopener'; });
+  var caBox = document.getElementById('ca'), caVal = document.getElementById('caVal'), caCopy = document.getElementById('caCopy');
+  if(caBox){ caVal.textContent = HAS ? CA : 'SOON'; if(HAS){ caBox.classList.add('live'); caBox.addEventListener('click', function(){ if(navigator.clipboard) navigator.clipboard.writeText(CA); caCopy.textContent = 'COPIED'; setTimeout(function(){ caCopy.textContent = 'COPY'; }, 1100); }); } }
+  var links = [].slice.call(document.querySelectorAll('.side a')), secs = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  function spy(){ var y = window.scrollY + 120, cur = 0; secs.forEach(function(s, i){ if(s && s.offsetTop <= y) cur = i; }); links.forEach(function(a, i){ a.classList.toggle('on', i === cur); }); }
+  addEventListener('scroll', spy, { passive: true }); spy();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/config.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Rwaex · Turn real assets into real stocks</title>
+<meta name="description" content="Build a floating island of gold mines, oil derricks and stock presses on Robinhood Chain and get paid in real NVDA and GLD Stock Tokens" />
+<meta name="theme-color" content="#8fcbe6" />
+<link rel="icon" type="image/png" href="/assets/favicon.png" />
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+<meta property="og:image" content="/assets/video/desktop.webp" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preload" as="image" href="/assets/img/logo.webp" />
+<link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+:root{--navy:#0f2a3d;--paper:#fffaf0;--well:#eef7ec;--line:#cfe3c9;--leaf:#5fd07e;--leaf2:#2f8a4b;--gold:#ffcc4d;--gold2:#b8912f;--sky:#8fcbe6;--muted:#55707f;--disp:"Titan One",system-ui,sans-serif;--body:"Nunito",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html,body{height:100%;overflow:hidden}
+body{background:var(--sky);color:var(--navy);font-family:var(--body);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+.stage{position:fixed;inset:0;overflow:hidden;background:linear-gradient(#7cc0e6,#a9dcef)}
+.stage img,.stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;max-width:none}
+.stage video{opacity:0;transition:opacity .6s}
+.stage video.on{opacity:1}
+.ui{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;padding:max(5vh,20px) max(5vw,16px) max(3vh,14px)}
+.head{display:flex;flex-direction:column;gap:clamp(12px,2.4vh,24px);width:min(40vw,560px);margin-top:auto}
+.low{display:flex;flex-direction:column;gap:14px;width:min(40vw,560px);margin-top:clamp(18px,3vh,32px);margin-bottom:auto}
+.spacer{display:none}
+.logo{width:100%;height:auto;filter:drop-shadow(0 4px 0 rgba(15,42,61,.18));animation:pop .7s cubic-bezier(.2,.9,.25,1.2) both}
+.tag{font-weight:900;font-size:clamp(16px,1.9vw,30px);line-height:1.2;color:#fff;text-shadow:0 2px 0 rgba(15,42,61,.45),0 3px 12px rgba(15,42,61,.35);animation:rise .6s .15s both}
+.acts{display:flex;gap:12px;flex-wrap:wrap;animation:rise .6s .28s both}
+.btn{min-height:56px;padding:12px 26px;border-radius:20px;border:3px solid var(--leaf2);background:var(--leaf);color:var(--navy);font-family:var(--disp);font-size:clamp(18px,1.9vw,24px);letter-spacing:.01em;box-shadow:0 6px 0 var(--leaf2),inset 0 2px 0 rgba(255,255,255,.55);transition:transform .08s,box-shadow .08s,background .15s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.btn:hover{background:#74dc90}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--leaf2),inset 0 2px 0 rgba(255,255,255,.55)}
+.btn.cream{background:var(--paper);border-color:#b9c9b1;box-shadow:0 6px 0 #b9c9b1,inset 0 2px 0 #fff}
+.btn.cream:hover{background:#fff}
+.btn.cream:active{box-shadow:0 2px 0 #b9c9b1}
+.btn:focus-visible{outline:3px solid var(--navy);outline-offset:5px}
+.payday{display:inline-flex;align-items:center;gap:10px;align-self:flex-start;padding:8px 14px;border-radius:999px;background:rgba(255,250,240,.82);border:2px solid rgba(15,42,61,.12);font-weight:800;font-size:13px;color:var(--navy);animation:rise .6s .4s both}
+.payday i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--leaf);box-shadow:0 0 0 3px rgba(95,208,126,.3);animation:beat 1.6s infinite}
+.foot{display:flex;align-items:center;justify-content:center;gap:18px;font-weight:800;font-size:13px}
+.foot a{text-decoration:none;opacity:.85;color:var(--navy);background:rgba(255,250,240,.6);padding:6px 12px;border-radius:999px}
+.foot a:hover{opacity:1}
+.pause{position:fixed;right:14px;bottom:14px;z-index:3;width:44px;height:44px;border-radius:50%;border:2px solid rgba(15,42,61,.16);background:rgba(255,250,240,.55);display:grid;place-items:center}
+.pause svg{width:16px;height:16px}
+@keyframes pop{from{opacity:0;transform:translateY(-10px) scale(.92)}}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+@keyframes beat{50%{box-shadow:0 0 0 7px rgba(95,208,126,0)}}
+
+/* how it works */
+.veil{position:fixed;inset:0;z-index:10;background:rgba(15,42,61,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:grid;place-items:center;padding:16px;animation:fade .16s ease-out}
+.card{width:min(500px,100%);max-height:calc(100dvh - 32px);overflow-y:auto;background:var(--paper);border:4px solid var(--gold2);border-radius:32px;box-shadow:0 9px 0 var(--gold2),0 26px 65px rgba(0,0,0,.33),inset 0 3px 0 #fffc;animation:card .22s cubic-bezier(.2,.9,.25,1.1)}
+.card .top{position:sticky;top:0;background:var(--well);border-bottom:3px solid var(--line);padding:22px 58px 18px 24px;border-radius:28px 28px 0 0}
+.card .kick{font-weight:900;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--leaf2)}
+.card h2{font-family:var(--disp);font-weight:400;font-size:32px;line-height:1.05;margin-top:4px}
+.x{position:absolute;right:16px;top:18px;width:40px;height:40px;border-radius:50%;border:2.5px solid #8fb08a;background:#fff;box-shadow:0 4px 0 #8fb08a;font-family:var(--disp);font-size:18px;line-height:1}
+.x:active{transform:translateY(3px);box-shadow:0 1px 0 #8fb08a}
+.steps{padding:10px 24px 8px}
+.step{display:grid;grid-template-columns:86px 1fr;gap:16px;align-items:center;padding:12px 0;border-bottom:2px dashed var(--line)}
+.step:last-child{border-bottom:0}
+.step img{width:86px;height:86px;object-fit:contain;animation:bob 3.2s ease-in-out infinite}
+.step:nth-child(2) img{animation-delay:-.8s}.step:nth-child(3) img{animation-delay:-1.6s}.step:nth-child(4) img{animation-delay:-2.4s}
+.step h3{font-family:var(--disp);font-weight:400;font-size:22px;line-height:1.1}
+.step p{font-size:15px;font-weight:700;color:var(--muted);margin-top:4px;line-height:1.35}
+.ca{margin:4px 24px 22px;padding:14px;border-radius:20px;background:#fff;border:3px solid var(--line);text-align:center;cursor:pointer}
+.ca small{display:block;font-weight:900;font-size:10.5px;letter-spacing:.2em;color:var(--leaf2)}
+.ca b{display:block;margin-top:6px;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-weight:700;font-size:clamp(9.5px,2.7vw,13px);white-space:nowrap}
+.ca b.soon{font-family:var(--disp);font-weight:400;font-size:26px}
+.ca span{display:inline-block;margin-top:10px;padding:6px 16px;border-radius:12px;background:var(--gold);border:2px solid var(--gold2);box-shadow:0 3px 0 var(--gold2);font-family:var(--disp);font-size:14px}
+.card .go{display:flex;gap:10px;padding:0 24px 24px}
+.card .go .btn{flex:1}
+@keyframes fade{from{opacity:0}}
+@keyframes card{from{opacity:0;transform:translateY(12px) scale(.94)}}
+@keyframes bob{50%{transform:translateY(-5px)}}
+
+@media (max-aspect-ratio: 1/1){
+  .ui{padding-top:max(4.5vh,18px)}
+  .head{width:100%;margin-top:0;align-items:center;text-align:center}
+  .logo{width:min(82vw,400px)}
+  .tag{font-size:clamp(17px,4.6vw,26px)}
+  .spacer{display:block;flex:1}
+  .low{width:100%;margin:0 0 max(2.5vh,10px);align-items:center}
+  .acts{flex-direction:column;align-items:stretch;width:min(100%,360px)}
+  .payday{align-self:center}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <img id="poster" alt="" />
+  <video id="bg" muted loop playsinline preload="none" aria-hidden="true"></video>
+</div>
+
+<main class="ui">
+  <div class="head">
+    <img class="logo" src="/assets/img/logo.webp" alt="Rwaex" />
+    <p class="tag" id="tag">Turn real assets into real stocks</p>
+  </div>
+  <div class="spacer"></div>
+  <div class="low">
+    <span class="payday" id="payday"><i></i><span id="paydayTxt">Next payday soon</span></span>
+    <div class="acts">
+      <a class="btn" href="/play">Build your island</a>
+      <button class="btn cream" id="howBtn" type="button">How it works</button>
+    </div>
+  </div>
+  <div class="foot"><a data-link="x" href="https://x.com" target="_blank" rel="noopener">X · @rwaex</a><a href="/docs">Docs</a><a data-link="pons" href="https://www.ponsfamily.com/launchpad" target="_blank" rel="noopener">Buy $RWAEX</a></div>
+</main>
+<button class="pause" id="pause" type="button" aria-label="Pause background"><svg viewBox="0 0 16 16" fill="#0f2a3d"><rect x="3" y="2" width="3.5" height="12" rx="1"/><rect x="9.5" y="2" width="3.5" height="12" rx="1"/></svg></button>
+
+<div class="veil" id="how" hidden role="dialog" aria-modal="true" aria-labelledby="howTitle">
+  <div class="card" style="position:relative">
+    <div class="top"><div class="kick">The game on Robinhood Chain</div><h2 id="howTitle">How it works</h2><button class="x" id="howX" type="button" aria-label="Close">✕</button></div>
+    <div class="steps">
+      <div class="step"><img src="/assets/img/machines/vault.webp" alt="" /><div><h3>Build your island</h3><p>Start with a vault and a gold mine, then fill the pads with machines that work together</p></div></div>
+      <div class="step"><img src="/assets/img/machines/derrick.webp" alt="" /><div><h3>Fuel the derricks</h3><p>Grab a fuel crate every 8 hours and keep the derricks pumping power</p></div></div>
+      <div class="step"><img src="/assets/img/machines/refinery.webp" alt="" /><div><h3>Pick where power goes</h3><p>Sell it to the grid for coins, or run it through the Stock Press or the Bullion Refinery</p></div></div>
+      <div class="step"><img src="/assets/img/machines/press.webp" alt="" /><div><h3>Payday in real stocks</h3><p>Every day at 00:00 UTC the pool buys NVDA and GLD Stock Tokens and pays islands by their points</p></div></div>
+    </div>
+    <div class="ca" id="ca" role="button" tabindex="0" aria-label="Copy contract address"><small>CONTRACT · $RWAEX · ROBINHOOD CHAIN</small><b class="soon" id="caAddr">soon</b><span id="caCopy">COPY</span></div>
+    <div class="go"><a class="btn" href="/play">Play now</a></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const S = window.SITE || {}, CA = String(S.CA || 'SOON'), HAS = /^0x[0-9a-fA-F]{40}$/.test(CA);
+  document.querySelectorAll('[data-link=pons]').forEach(a => a.href = HAS ? window.PONS_HOME + '/' + CA : window.PONS_HOME);
+  document.querySelectorAll('[data-link=x]').forEach(a => { a.href = S.X_URL || 'https://x.com'; const h = (S.X_URL || '').split('/').pop(); if (h && h !== 'soon') a.textContent = 'X · @' + h; });
+  if (S.TAGLINE) document.getElementById('tag').textContent = S.TAGLINE;
+  const addr = document.getElementById('caAddr'), copy = document.getElementById('caCopy'), ca = document.getElementById('ca');
+  if (HAS) { addr.textContent = CA; addr.classList.remove('soon'); }
+  const doCopy = () => { if (!HAS) { copy.textContent = 'NOT YET'; } else { navigator.clipboard && navigator.clipboard.writeText(CA); copy.textContent = 'COPIED'; } setTimeout(() => copy.textContent = 'COPY', 1400); };
+  ca.onclick = doCopy; ca.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); doCopy(); } };
+
+  /* background: portrait or wide loop, poster first, pause respects reduced motion and data saver */
+  const v = document.getElementById('bg'), poster = document.getElementById('poster'), pauseBtn = document.getElementById('pause');
+  const pick = () => innerWidth / innerHeight < 0.9 ? 'mobile' : 'desktop';
+  let kind = null;
+  const load = () => {
+    const k = pick(); if (k === kind) return; kind = k;
+    poster.src = '/assets/video/' + k + '.webp';
+    v.classList.remove('on'); v.src = '/assets/video/' + k + '.mp4'; v.load();
+    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches || (navigator.connection && navigator.connection.saveData);
+    if (!calm) v.play().then(() => { v.classList.add('on'); setIcon(); }).catch(setIcon); else setIcon();
+  };
+  v.addEventListener('playing', () => v.classList.add('on'));
+  const setIcon = () => { pauseBtn.innerHTML = v.paused ? '<svg viewBox="0 0 16 16" fill="#0f2a3d"><path d="M4 2.5v11l9-5.5z"/></svg>' : '<svg viewBox="0 0 16 16" fill="#0f2a3d"><rect x="3" y="2" width="3.5" height="12" rx="1"/><rect x="9.5" y="2" width="3.5" height="12" rx="1"/></svg>'; pauseBtn.setAttribute('aria-label', v.paused ? 'Play background' : 'Pause background'); };
+  pauseBtn.onclick = () => { if (v.paused) v.play().then(() => v.classList.add('on')).finally(setIcon); else { v.pause(); setIcon(); } };
+  load(); let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(load, 250); });
+
+  /* how it works */
+  const how = document.getElementById('how'), last = { el: null };
+  const open = () => { last.el = document.activeElement; how.hidden = false; document.getElementById('howX').focus(); };
+  const close = () => { how.hidden = true; last.el && last.el.focus(); };
+  document.getElementById('howBtn').onclick = open;
+  document.getElementById('howX').onclick = close;
+  how.addEventListener('click', e => { if (e.target === how) close(); });
+  addEventListener('keydown', e => {
+    if (how.hidden) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'Tab') { const f = [...how.querySelectorAll('button,a,[tabindex="0"]')]; const i = f.indexOf(document.activeElement); if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); } else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); } }
+  });
+  if (location.hash === '#how') open();
+
+  /* payday chip */
+  let target = 0, pool = null;
+  const fmt = ms => { const s = Math.max(0, Math.floor(ms / 1000)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h + 'h ' + String(m).padStart(2, '0') + 'm'; };
+  const tick = () => { if (!target) return; document.getElementById('paydayTxt').textContent = 'Payday in ' + fmt(target - Date.now()) + (pool != null ? ' · pool ' + pool.toFixed(3) + ' ETH' : ''); };
+  fetch('/api/world').then(r => r.json()).then(w => { target = Date.now() + w.msToPayday; pool = w.treasury && w.treasury.pool; tick(); }).catch(() => {});
+  setInterval(tick, 20000);
+})();
+</script>
+</body>
+</html>

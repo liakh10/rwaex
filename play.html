@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/config.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Play · Rwaex</title>
+<meta name="theme-color" content="#8fcbe6" />
+<link rel="icon" type="image/png" href="/assets/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+:root{--navy:#0f2a3d;--paper:#fffaf0;--well:#eef7ec;--line:#cfe3c9;--leaf:#5fd07e;--leaf2:#2f8a4b;--gold:#ffcc4d;--gold2:#b8912f;--coral:#ff7a66;--coral2:#b85446;--muted:#55707f;--disp:"Titan One",system-ui,sans-serif;--body:"Nunito",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html{overflow-x:hidden}
+body{min-height:100dvh;background:linear-gradient(#72b9e3 0%,#a6daee 70%,#c9ecf3 100%) fixed;color:var(--navy);font-family:var(--body);font-weight:700;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+img{display:block;max-width:100%}
+
+/* drifting clouds behind everything */
+.sky{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.cloud{position:absolute;width:var(--w,220px);height:calc(var(--w,220px)*.42);opacity:.85;filter:drop-shadow(0 7px 6px rgba(127,160,200,.12));animation:drift var(--d,48s) ease-in-out infinite alternate}
+.cloud::before,.cloud::after,.cloud i{content:"";position:absolute;background:#fffbf5;border-radius:999px}
+.cloud::before{left:8%;right:8%;bottom:0;height:52%}
+.cloud::after{left:22%;width:42%;bottom:22%;aspect-ratio:1}
+.cloud i{left:50%;width:34%;bottom:20%;aspect-ratio:1}
+@keyframes drift{from{transform:translateX(-30px)}to{transform:translateX(110px)}}
+
+/* hud */
+.hud{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:10px max(16px,3vw);background:rgba(255,250,240,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:3px solid rgba(15,42,61,.08)}
+.hud .home img{height:34px;width:auto}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-left:6px}
+.pill{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 12px 0 6px;border-radius:999px;background:#fff;border:2.5px solid var(--line);font-weight:900;font-size:14px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pill .ic{width:26px;height:26px;border-radius:50%;display:grid;place-items:center}
+.ic.coin{background:radial-gradient(circle at 35% 30%,#ffe189,#f2b631 70%);border:2px solid var(--gold2)}
+.ic.fuel{background:#ffd8cf;border:2px solid var(--coral2)}
+.ic.power{background:#dff5e3;border:2px solid var(--leaf2)}
+.ic.time{background:#e6efff;border:2px solid #6f8fc4}
+.ic svg{width:14px;height:14px}
+.hud .right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{min-height:44px;padding:8px 18px;border-radius:16px;border:3px solid var(--leaf2);background:var(--leaf);color:var(--navy);font-family:var(--disp);font-size:17px;box-shadow:0 5px 0 var(--leaf2),inset 0 2px 0 rgba(255,255,255,.55);transition:transform .08s,box-shadow .08s,background .15s;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;white-space:nowrap}
+.btn:hover{background:#74dc90}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--leaf2)}
+.btn:disabled{filter:grayscale(.7);opacity:.6;cursor:default;transform:none}
+.btn.cream{background:var(--paper);border-color:#b9c9b1;box-shadow:0 5px 0 #b9c9b1,inset 0 2px 0 #fff}
+.btn.gold{background:var(--gold);border-color:var(--gold2);box-shadow:0 5px 0 var(--gold2),inset 0 2px 0 rgba(255,255,255,.55)}
+.btn.coral{background:var(--coral);border-color:var(--coral2);box-shadow:0 5px 0 var(--coral2),inset 0 2px 0 rgba(255,255,255,.4)}
+.btn.small{min-height:36px;padding:4px 12px;font-size:14px;border-radius:12px;box-shadow:0 4px 0 var(--leaf2)}
+.btn.cream.small{box-shadow:0 4px 0 #b9c9b1}
+
+/* layout */
+.game{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:clamp(12px,2vw,28px);width:min(1280px,100%);margin:0 auto;padding:18px max(16px,3vw) 40px}
+.board-wrap{position:relative}
+.board{position:relative;width:min(100%,720px);aspect-ratio:1;margin:0 auto;animation:float 7s ease-in-out infinite}
+.board>img{position:absolute;inset:0;width:100%;height:100%;max-width:none;pointer-events:none;user-select:none;-webkit-mask-image:radial-gradient(closest-side,#000 80%,transparent 100%);mask-image:radial-gradient(closest-side,#000 80%,transparent 100%)}
+@keyframes float{50%{transform:translateY(-8px)}}
+.pad{position:absolute;width:21%;aspect-ratio:1;transform:translate(-50%,-72%);border:0;background:none;display:grid;place-items:end center;-webkit-tap-highlight-color:transparent}
+.pad img{width:100%;height:auto;max-width:none;transition:transform .15s;filter:drop-shadow(0 6px 4px rgba(15,42,61,.18))}
+.pad:hover img{transform:translateY(-4px) scale(1.03)}
+.pad.sel img{transform:translateY(-6px) scale(1.05);filter:drop-shadow(0 0 0 #fff) drop-shadow(0 0 10px rgba(255,255,255,.95)) drop-shadow(0 6px 4px rgba(15,42,61,.2))}
+.pad .plus{width:46%;aspect-ratio:1;margin-bottom:18%;border-radius:50%;background:rgba(255,250,240,.9);border:3px dashed var(--leaf2);display:grid;place-items:center;font-family:var(--disp);font-size:clamp(16px,2.6vw,26px);color:var(--leaf2);animation:pulse 2.2s ease-in-out infinite}
+.pad .lock{width:34%;aspect-ratio:1;margin-bottom:22%;border-radius:10px;background:rgba(15,42,61,.28);display:grid;place-items:center}
+.pad .lock svg{width:50%;height:50%}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.puff{position:absolute;left:var(--x,55%);top:var(--y,10%);width:14%;aspect-ratio:1;border-radius:50%;background:#fff;opacity:0;pointer-events:none;animation:puff 3.2s ease-out infinite;animation-delay:var(--dl,0s)}
+@keyframes puff{0%{opacity:0;transform:translate(0,0) scale(.3)}15%{opacity:.7}60%{opacity:.3}to{opacity:0;transform:translate(var(--dx,10px),-60px) scale(1.6)}}
+.pop{position:absolute;pointer-events:none;font-family:var(--disp);font-size:clamp(13px,1.8vw,18px);color:#fff;text-shadow:0 2px 0 var(--leaf2),0 0 8px rgba(15,42,61,.3);animation:popup 1.6s ease-out forwards;white-space:nowrap}
+.pop.gold{text-shadow:0 2px 0 var(--gold2),0 0 8px rgba(15,42,61,.3)}
+@keyframes popup{0%{opacity:0;transform:translate(-50%,0) scale(.7)}15%{opacity:1;transform:translate(-50%,-10px) scale(1)}to{opacity:0;transform:translate(-50%,-70px)}}
+.store{position:absolute;left:50%;bottom:6%;transform:translateX(-50%);width:min(78%,420px);padding:10px 14px;border-radius:18px;background:rgba(255,250,240,.92);border:3px solid var(--line);display:flex;align-items:center;gap:12px}
+.store .bar{flex:1;height:12px;border-radius:999px;background:#e3ecdf;overflow:hidden;border:2px solid var(--line)}
+.store .bar span{display:block;height:100%;background:linear-gradient(90deg,var(--leaf),#b9ec73);border-radius:999px}
+.store.full .bar span{background:linear-gradient(90deg,var(--coral),#ffb35c)}
+.store small{display:block;font-size:12px;color:var(--muted)}
+
+/* side panel */
+.panel{position:relative;align-self:start;background:var(--paper);border:4px solid var(--gold2);border-radius:28px;box-shadow:0 8px 0 var(--gold2),0 20px 50px rgba(15,42,61,.2);overflow:hidden}
+.tabs{display:flex;background:var(--well);border-bottom:3px solid var(--line);padding:8px;gap:6px}
+.tabs button{flex:1;height:40px;border-radius:14px;border:0;background:none;font-family:var(--disp);font-size:15px;color:var(--muted)}
+.tabs button.on{background:#fff;color:var(--navy);box-shadow:0 3px 0 var(--line)}
+.body{padding:18px}
+h3{font-family:var(--disp);font-weight:400;font-size:24px;line-height:1.1}
+.muted{color:var(--muted)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.item{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;padding:10px;border-radius:18px;background:#fff;border:3px solid var(--line)}
+.item img{width:64px;height:64px;object-fit:contain}
+.item b{font-family:var(--disp);font-weight:400;font-size:17px}
+.item p{font-size:13px;color:var(--muted);line-height:1.3}
+.route{display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:center;width:100%;padding:12px;border-radius:18px;background:#fff;border:3px solid var(--line);text-align:left}
+.route img{width:52px;height:52px;object-fit:contain}
+.route.on{border-color:var(--leaf2);background:#eefbef;box-shadow:0 4px 0 var(--leaf2)}
+.route:disabled{opacity:.55;cursor:default}
+.route b{font-family:var(--disp);font-weight:400;font-size:17px}
+.route span{display:block;font-size:13px;color:var(--muted)}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.kv div{padding:10px 12px;border-radius:16px;background:#fff;border:3px solid var(--line)}
+.kv i{display:block;font-style:normal;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.kv b{display:block;font-family:var(--disp);font-weight:400;font-size:19px;margin-top:2px;font-variant-numeric:tabular-nums}
+.note{margin-top:12px;padding:10px 12px;border-radius:14px;background:#fff4d6;border:2px solid #f0d58a;font-size:13px}
+.note.good{background:#eafbe9;border-color:#b6e3b4}
+.line{display:flex;justify-content:space-between;gap:10px;padding:9px 12px;border-radius:14px;background:#fff;border:2px solid var(--line);font-size:13.5px}
+.line a{color:var(--leaf2)}
+.gate{position:relative;z-index:1;width:min(520px,calc(100% - 32px));margin:8vh auto 40px;background:var(--paper);border:4px solid var(--gold2);border-radius:32px;box-shadow:0 9px 0 var(--gold2),0 26px 65px rgba(15,42,61,.25);padding:26px;text-align:center}
+.gate img.lg{width:min(360px,90%);margin:0 auto}
+.gate .isl{width:min(300px,80%);margin:12px auto 0;animation:float 6s ease-in-out infinite}
+.gate p{margin-top:12px;color:var(--muted);font-size:15px}
+.gate .btn{margin-top:18px;width:100%;min-height:56px;font-size:21px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:50;max-width:calc(100% - 32px);padding:12px 18px;border-radius:16px;background:var(--navy);color:#fff;font-weight:800;box-shadow:0 12px 30px rgba(15,42,61,.35)}
+.menu{position:absolute;right:max(16px,3vw);top:62px;z-index:30;background:#fff;border:3px solid var(--line);border-radius:16px;padding:6px;min-width:190px}
+.menu a,.menu button{display:block;width:100%;text-align:left;padding:10px 12px;border-radius:10px;border:0;background:none;text-decoration:none}
+.menu a:hover,.menu button:hover{background:var(--well)}
+
+@media (max-width:980px){
+  .game{grid-template-columns:1fr}
+  .panel{max-width:620px;width:100%;margin:0 auto}
+}
+@media (max-width:620px){
+  .hud{flex-wrap:wrap;gap:8px;padding:8px 12px}
+  .hud .home img{height:28px}
+  .stats{order:3;width:100%;margin:0;gap:6px;justify-content:space-between}
+  .pill{height:34px;font-size:12.5px;padding:0 9px 0 4px;gap:5px}
+  .pill .ic{width:22px;height:22px}
+  .pill .lbl{display:none}
+  .btn{font-size:15px}
+  .store{bottom:2%;width:92%;padding:8px 10px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="sky" aria-hidden="true">
+  <div class="cloud" style="--w:260px;left:-4%;top:14%;--d:52s"><i></i></div>
+  <div class="cloud" style="--w:180px;left:62%;top:6%;--d:44s"><i></i></div>
+  <div class="cloud" style="--w:320px;left:74%;top:62%;--d:60s"><i></i></div>
+  <div class="cloud" style="--w:210px;left:8%;top:72%;--d:48s"><i></i></div>
+</div>
+
+<header class="hud">
+  <a class="home" href="/" aria-label="Rwaex home"><img src="/assets/img/logo.webp" alt="Rwaex" /></a>
+  <div class="stats" id="stats" hidden>
+    <span class="pill" title="Coins"><span class="ic coin"></span><span id="sCoins">0</span></span>
+    <span class="pill" title="Fuel"><span class="ic fuel"><svg viewBox="0 0 14 14"><path d="M7 1C5 4 3 6.3 3 8.6A4 4 0 0 0 11 8.6C11 6.3 9 4 7 1z" fill="#b85446"/></svg></span><span id="sFuel">0</span></span>
+    <span class="pill" title="Power per hour"><span class="ic power"><svg viewBox="0 0 14 14"><path d="M8 1 3 8h3.5L5.5 13 11 6H7.5z" fill="#2f8a4b"/></svg></span><span id="sPower">0</span><span class="lbl muted">/h</span></span>
+    <span class="pill" title="Next payday"><span class="ic time"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5" fill="none" stroke="#6f8fc4" stroke-width="2"/><path d="M7 4v3.3l2 1.3" stroke="#6f8fc4" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></span><span class="lbl muted">Payday</span><span id="sPayday">--</span></span>
+  </div>
+  <div class="right"><button class="btn cream small" id="walletBtn">Connect</button></div>
+</header>
+<div class="menu" id="menu" hidden></div>
+
+<section class="gate" id="gate">
+  <img class="lg" src="/assets/img/logo.webp" alt="Rwaex" />
+  <img class="isl" src="/assets/img/machines/press.webp" alt="" />
+  <p id="gateTxt">Connect a wallet and sign one message to claim your island. No transaction, no gas</p>
+  <button class="btn" id="gateBtn">Connect wallet</button>
+</section>
+
+<main class="game" id="game" hidden>
+  <div class="board-wrap">
+    <div class="board" id="board">
+      <img src="/assets/img/board.webp" alt="" />
+      <div id="pads"></div>
+      <div id="fx"></div>
+    </div>
+    <div class="store" id="store"><div style="flex:1"><div class="row" style="justify-content:space-between"><b id="storeTitle">Storage</b><small id="storeTxt"></small></div><div class="bar"><span id="storeBar" style="width:0"></span></div></div><button class="btn small" id="collectBtn">Collect</button></div>
+  </div>
+  <aside class="panel">
+    <nav class="tabs" id="tabs"><button data-t="island" class="on">Island</button><button data-t="route">Route</button><button data-t="payday">Payday</button><button data-t="top">Top</button></nav>
+    <div class="body" id="body"></div>
+  </aside>
+</main>
+<div class="toast" id="toast" hidden></div>
+
+<script type="module">
+import * as W from '/lib/wallet.js';
+import * as I from '/lib/island.js';
+
+const $ = id => document.getElementById(id);
+const PADS = [[50.6, 36.6], [40.3, 41.5], [60.5, 41.5], [29.8, 46.9], [50.6, 46.9], [70.8, 46.9], [40.3, 52.2], [60.5, 52.2], [50.6, 57.6]];
+const IMG = k => `/assets/img/machines/${k}.webp`;
+const G = { session: null, address: null, data: null, world: null, skew: 0, tab: 'island', sel: null, busy: false };
+const nowS = () => Math.floor(Date.now() / 1000) + G.skew;
+const fmt = v => v >= 10000 ? Math.floor(v).toLocaleString('en-US') : v >= 100 ? Math.floor(v).toString() : (Math.floor(v * 10) / 10).toString();
+const dur = s => { s = Math.max(0, Math.floor(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? `${h}h ${String(m).padStart(2, '0')}m` : `${m}m ${String(s % 60).padStart(2, '0')}s`; };
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+let tt; const toast = (m, ms = 3200) => { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => t.hidden = true, ms); };
+
+/* ------------------------------------------------ api */
+async function api(path, opts = {}) {
+  const r = await fetch(path, { ...opts, headers: { 'content-type': 'application/json' } });
+  const j = await r.json().catch(() => ({}));
+  if (r.status === 401) { forget(); throw Error(j.error || 'Sign in again'); }
+  if (!r.ok) throw Error(j.error || 'Something went wrong');
+  return j;
+}
+const skey = a => 'rwaex:session:' + a.toLowerCase();
+function forget() { if (G.address) try { localStorage.removeItem(skey(G.address)); } catch {} G.session = null; showGate(); }
+
+async function signIn() {
+  const w = W.state();
+  if (!w.address) await W.connect();
+  const address = W.state().address;
+  let s = null; try { s = localStorage.getItem(skey(address)); } catch {}
+  if (s) { G.session = s; G.address = address; try { await loadIsland(); return; } catch { G.session = null; } }
+  $('gateBtn').textContent = 'Sign the message in your wallet';
+  const { nonce, message } = await api('/api/session');
+  const signature = await W.sign(message);
+  const r = await api('/api/session', { method: 'POST', body: JSON.stringify({ address, nonce, signature }) });
+  G.session = r.session; G.address = address;
+  try { localStorage.setItem(skey(address), r.session); } catch {}
+  await loadIsland();
+}
+
+async function loadIsland() {
+  const d = await api('/api/island?session=' + G.session);
+  take(d);
+  $('gate').hidden = true; $('game').hidden = false; $('stats').hidden = false;
+  loadWorld();
+}
+function take(d) { G.data = d; G.skew = d.now - Math.floor(Date.now() / 1000); paint(); }
+async function act(action, extra = {}, okMsg) {
+  if (G.busy) return; G.busy = true;
+  try { const d = await api('/api/island', { method: 'POST', body: JSON.stringify({ session: G.session, action, ...extra }) }); take(d); if (okMsg) toast(okMsg(d.result || {})); loadWorld(); }
+  catch (e) { toast(e.message, 4200); }
+  G.busy = false;
+}
+async function loadWorld() { try { G.world = await api('/api/world' + (G.address ? '?address=' + G.address : '')); G.worldAt = Date.now(); if (G.tab !== 'island') paintPanel(); } catch {} }
+
+function showGate() { $('gate').hidden = false; $('game').hidden = true; $('stats').hidden = true; $('gateBtn').textContent = W.state().address ? 'Sign in to your island' : 'Connect wallet'; }
+
+/* ------------------------------------------------ projection */
+function projected() {
+  const isl = structuredClone(G.data.island);
+  const t = nowS();
+  const pending = I.sync(isl, t);
+  const s = I.stats(G.data.island);
+  const since = t - G.data.island.last;
+  return { isl, pending, s, since, full: since >= s.capHours * 3600, rates: I.rates(isl) };
+}
+
+/* ------------------------------------------------ board */
+function paint() {
+  paintBoard(); paintHud(); paintPanel();
+}
+function paintBoard() {
+  const isl = G.data.island, s = I.stats(isl), unlocked = new Set(s.unlocked);
+  const producing = k => (k === 'mine') || (k === 'derrick' && isl.fuel > 0) || (k === 'press' && isl.route === 'press') || (k === 'refinery' && isl.route === 'refinery');
+  $('pads').innerHTML = PADS.map(([x, y], i) => {
+    const k = isl.pads[i];
+    const inner = k ? `<img src="${IMG(k)}" alt="${esc(k === 'vault' ? 'Vault' : I.MACHINES[k].name)}" />${producing(k) || k === 'vault' ? `<span class="puff" style="--x:48%;--y:-6%;--dl:${(i * .7) % 3}s"></span><span class="puff" style="--x:56%;--y:-10%;--dl:${(i * .7 + 1.4) % 3}s;--dx:-8px"></span>` : ''}`
+      : unlocked.has(i) ? '<span class="plus">+</span>' : '<span class="lock"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="2" fill="#fff"/><path d="M5 7V5a3 3 0 0 1 6 0v2" stroke="#fff" stroke-width="2" fill="none"/></svg></span>';
+    return `<button class="pad ${G.sel === i ? 'sel' : ''}" data-pad="${i}" style="left:${x}%;top:${y}%;z-index:${10 + Math.round(y)}" aria-label="Pad ${i + 1}">${inner}</button>`;
+  }).join('');
+}
+$('pads').onclick = e => {
+  const b = e.target.closest('.pad'); if (!b) return;
+  const i = +b.dataset.pad, isl = G.data.island;
+  if (!isl.pads[i] && !I.stats(isl).unlocked.includes(i)) { toast('Upgrade the vault to unlock this pad'); }
+  G.sel = i; G.tab = 'island';
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x.dataset.t === 'island'));
+  paintBoard(); paintPanel();
+};
+
+/* floating +power popups from producing machines */
+setInterval(() => {
+  if (!G.data || document.hidden || $('game').hidden) return;
+  const p = projected(); if (p.full) return;
+  const isl = G.data.island;
+  const cands = isl.pads.map((k, i) => [k, i]).filter(([k]) => k === 'mine' || (k === 'derrick' && isl.fuel > 0) || (k === 'press' && isl.route === 'press') || (k === 'refinery' && isl.route === 'refinery'));
+  if (!cands.length) return;
+  const [k, i] = cands[Math.floor(Math.random() * cands.length)];
+  const el = document.createElement('div');
+  const conv = k === 'press' || k === 'refinery';
+  el.className = 'pop' + (conv ? ' gold' : '');
+  el.textContent = k === 'press' ? '+NVDA' : k === 'refinery' ? '+GLD' : '+' + I.MACHINES[k].power + ' power';
+  el.style.left = PADS[i][0] + '%'; el.style.top = (PADS[i][1] - 16) + '%';
+  $('fx').appendChild(el); setTimeout(() => el.remove(), 1700);
+}, 1400);
+
+/* ------------------------------------------------ hud */
+function paintHud() {
+  if (!G.data) return;
+  const p = projected(), isl = p.isl;
+  $('sCoins').textContent = fmt(isl.coins);
+  $('sFuel').textContent = `${fmt(isl.fuel)}/${p.s.tank}`;
+  $('sPower').textContent = fmt(p.rates.power);
+  $('sPayday').textContent = dur((Math.floor(nowS() / 86400) + 1) * 86400 - nowS());
+  const pct = Math.min(100, p.since / (p.s.capHours * 3600) * 100);
+  $('storeBar').style.width = pct.toFixed(1) + '%';
+  $('store').classList.toggle('full', p.full);
+  const gained = G.data.island.route === 'grid' ? `+${fmt(p.pending.coins)} coins` : `+${fmt(p.pending[G.data.island.route])} ${G.data.island.route === 'press' ? 'NVDA' : 'GLD'} pts · +${fmt(p.pending.coins)} coins`;
+  $('storeTitle').textContent = p.full ? 'Storage full' : 'Producing';
+  $('storeTxt').textContent = p.full ? gained + ' · collect to keep going' : `${gained} · full in ${dur(p.s.capHours * 3600 - p.since)}`;
+}
+setInterval(() => { if (G.data && !$('game').hidden) { paintHud(); if (G.tab === 'island' && G.sel == null) paintPanel(true); } }, 1000);
+$('collectBtn').onclick = () => act('collect', {}, () => 'Collected');
+
+/* ------------------------------------------------ panel */
+$('tabs').onclick = e => { const b = e.target.closest('button'); if (!b) return; G.tab = b.dataset.t; if (G.tab !== 'island') G.sel = null; document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b)); paintBoard(); paintPanel(); if (G.tab !== 'island') loadWorld(); };
+
+function paintPanel(soft) {
+  if (!G.data) return;
+  const body = $('body'), isl = G.data.island, p = projected();
+  if (soft && body.dataset.view === 'overview') { const c = body.querySelector('[data-live=crate]'); if (c) c.textContent = crateLabel(); return; }
+  body.dataset.view = '';
+  if (G.tab === 'island') return paintIsland(body, isl, p);
+  if (G.tab === 'route') return paintRoute(body, isl);
+  if (G.tab === 'payday') return paintPayday(body, isl, p);
+  return paintTop(body);
+}
+const crateLabel = () => { const left = G.data.island.crateAt - nowS(); return left > 0 ? 'Next crate in ' + dur(left) : 'Fuel crate ready'; };
+
+function paintIsland(body, isl, p) {
+  const i = G.sel, k = i == null ? undefined : isl.pads[i], s = I.stats(isl);
+  if (i == null) {
+    body.dataset.view = 'overview';
+    const ready = isl.crateAt <= nowS();
+    body.innerHTML = `<h3>Your island</h3><p class="muted">Tap a pad to build, tap a machine to see what it does</p>
+      <div class="kv"><div><i>Vault level</i><b>${isl.level} of 3</b></div><div><i>Route</i><b>${I.ROUTES[isl.route].name}</b></div><div><i>Offline storage</i><b>${s.capHours}h</b></div><div><i>Fuel tank</i><b>${s.tank}</b></div></div>
+      <div class="list"><div class="item"><img src="${IMG('derrick')}" alt="" /><div><b data-live="crate">${crateLabel()}</b><p>+${G.data.holder.holder ? I.HOLDER_CRATE_FUEL : I.CRATE_FUEL} fuel${G.data.holder.holder ? ', holder bonus' : ''}. Derricks burn 1 an hour each</p></div><button class="btn gold small" id="crateBtn" ${ready ? '' : 'disabled'}>Open</button></div></div>
+      ${!G.data.holder.launched ? '<div class="note">Payouts start when $RWAEX launches. Build now, the points already count</div>' : G.data.holder.eligible ? '<div class="note good">You hold enough $RWAEX to be paid at payday and get double fuel crates</div>' : `<div class="note">Hold at least ${Number(G.world?.minHold || 1000000).toLocaleString('en-US')} $RWAEX to be paid at payday and get double fuel crates</div>`}`;
+    const cb = $('crateBtn'); if (cb) cb.onclick = () => act('crate', {}, r => `+${r.fuel} fuel`);
+    return;
+  }
+  if (!k) {
+    if (!s.unlocked.includes(i)) {
+      body.innerHTML = `<h3>Locked pad</h3><p class="muted">Upgrade the vault to open more pads</p><div class="row" style="margin-top:14px"><button class="btn cream" id="back">Back</button></div>`;
+    } else {
+      body.innerHTML = `<h3>Build on pad ${i + 1}</h3><p class="muted">You have ${fmt(p.isl.coins)} coins</p><div class="list">${Object.entries(I.MACHINES).map(([key, m]) => `
+        <div class="item"><img src="${IMG(key)}" alt="" /><div><b>${m.name}</b><p>${m.blurb}</p></div><button class="btn small" data-build="${key}" ${p.isl.coins >= m.cost ? '' : 'disabled'}>${m.cost}</button></div>`).join('')}</div>
+        <div class="row" style="margin-top:14px"><button class="btn cream" id="back">Back</button></div>`;
+    }
+  } else if (k === 'vault') {
+    const next = I.VAULT_UPGRADE[isl.level + 1];
+    body.innerHTML = `<h3>Vault · level ${isl.level}</h3><p class="muted">The heart of the island. Each level opens pads and adds 2 hours of offline storage</p>
+      <div class="kv"><div><i>Pads open</i><b>${s.unlocked.length} of 8</b></div><div><i>Storage</i><b>${s.capHours}h</b></div></div>
+      <div class="row" style="margin-top:14px">${next ? `<button class="btn gold" id="upBtn" ${p.isl.coins >= next ? '' : 'disabled'}>Upgrade · ${next} coins</button>` : '<span class="note good" style="margin:0">Top level</span>'}<button class="btn cream" id="back">Back</button></div>`;
+    const ub = $('upBtn'); if (ub) ub.onclick = () => act('upgrade', {}, r => `Vault level ${r.level}`);
+  } else {
+    const m = I.MACHINES[k];
+    const status = k === 'derrick' ? (isl.fuel > 0 ? 'Pumping' : 'Out of fuel') : m.route ? (isl.route === m.route ? 'Running on your route' : 'Idle, switch the route to use it') : k === 'mine' ? 'Digging' : 'Storing';
+    body.innerHTML = `<div class="item" style="grid-template-columns:96px 1fr;border:0;padding:0;background:none"><img src="${IMG(k)}" alt="" style="width:96px;height:96px" /><div><h3>${m.name}</h3><p class="muted">${m.blurb}</p></div></div>
+      <div class="kv"><div><i>Status</i><b style="font-size:16px">${status}</b></div><div><i>Refund</i><b>${Math.floor(m.cost / 2)}</b></div></div>
+      <div class="row" style="margin-top:14px"><button class="btn coral small" id="rmBtn">Remove</button><button class="btn cream" id="back">Back</button></div>`;
+    $('rmBtn').onclick = () => { if (confirm('Remove the ' + m.name + ' for ' + Math.floor(m.cost / 2) + ' coins?')) act('demolish', { pad: i }, r => `Removed, +${r.refund} coins`).then(() => { G.sel = null; paint(); }); };
+  }
+  body.querySelectorAll('[data-build]').forEach(b => b.onclick = () => act('build', { pad: i, kind: b.dataset.build }, r => I.MACHINES[r.built].name + ' built').then(() => { G.sel = null; paint(); }));
+  const bk = $('back'); if (bk) bk.onclick = () => { G.sel = null; paint(); };
+}
+
+function paintRoute(body, isl) {
+  const locked = isl.routeEpoch === Math.floor(nowS() / 86400);
+  const s = I.stats(isl);
+  const rows = [['grid', 'mine', 'Coins to build with, 1 per power'], ['press', 'press', `NVDA points, up to ${s.presses * 8}/h with ${s.presses} press${s.presses === 1 ? '' : 'es'}`], ['refinery', 'refinery', `GLD points, up to ${s.refineries * 8}/h with ${s.refineries} ${s.refineries === 1 ? 'refinery' : 'refineries'}`]];
+  body.innerHTML = `<h3>Where power goes</h3><p class="muted">One pick per day, it unlocks at payday. Power a converter cannot take is sold at 25%</p>
+    <div class="list">${rows.map(([r, img, txt]) => `<button class="route ${isl.route === r ? 'on' : ''}" data-route="${r}" ${locked && isl.route !== r ? 'disabled' : ''}><img src="${IMG(img)}" alt="" /><div><b>${I.ROUTES[r].name}</b><span>${txt}</span></div></button>`).join('')}</div>
+    ${locked ? `<div class="note">Route picked today. Change it after payday in ${dur((Math.floor(nowS() / 86400) + 1) * 86400 - nowS())}</div>` : ''}`;
+  body.querySelectorAll('[data-route]').forEach(b => b.onclick = () => { if (b.dataset.route === isl.route) return; if (confirm('Send power to ' + I.ROUTES[b.dataset.route].name + ' until payday?')) act('route', { route: b.dataset.route }, () => 'Route set'); });
+}
+
+function paintPayday(body, isl, p) {
+  const w = G.world;
+  if (!w) { body.innerHTML = '<p class="muted">Loading payday…</p>'; return; }
+  const me = w.me || { press: 0, refinery: 0, payouts: [] };
+  const myPress = me.press + (isl.route === 'press' ? p.pending.press : 0), myRef = me.refinery + (isl.route === 'refinery' ? p.pending.refinery : 0);
+  const totP = w.totals.press, totR = w.totals.refinery, pool = w.treasury.pool;
+  const shareP = totP ? myPress / Math.max(totP, myPress) : 0, shareR = totR ? myRef / Math.max(totR, myRef) : 0;
+  const potP = pool != null && (totP + totR) ? pool * totP / (totP + totR) : null, potR = pool != null && (totP + totR) ? pool * totR / (totP + totR) : null;
+  body.innerHTML = `<h3>Payday in ${dur((Math.floor(nowS() / 86400) + 1) * 86400 - nowS())}</h3><p class="muted">At 00:00 UTC the pool buys NVDA and GLD and pays islands by their points. Points count on the day you collect them</p>
+    <div class="kv"><div><i>Pool now</i><b>${pool == null ? 'soon' : pool.toFixed(4) + ' ETH'}</b></div><div><i>Islands today</i><b>${w.players}</b></div>
+      <div><i>Your NVDA pts</i><b>${fmt(myPress)}</b></div><div><i>Share of NVDA</i><b>${(shareP * 100).toFixed(1)}%${potP ? ' · ' + (potP * shareP).toFixed(4) : ''}</b></div>
+      <div><i>Your GLD pts</i><b>${fmt(myRef)}</b></div><div><i>Share of GLD</i><b>${(shareR * 100).toFixed(1)}%${potR ? ' · ' + (potR * shareR).toFixed(4) : ''}</b></div></div>
+    ${me.payouts.length ? `<h3 style="font-size:18px;margin-top:18px">Your payouts</h3><div class="list">${me.payouts.map(x => `<div class="line"><span>Day ${x.epoch}</span><b>${(Number(x.amount) / 1e18).toFixed(5)} ${esc(x.stock)}</b><a href="${W.explorer('tx', x.tx)}" target="_blank" rel="noopener">tx</a></div>`).join('')}</div>` : ''}
+    <h3 style="font-size:18px;margin-top:18px">Past paydays</h3><div class="list">${w.paydays.length ? w.paydays.map(d => `<div class="line"><span>${new Date(d.epoch * 86400000).toISOString().slice(5, 10)}</span><span>${d.note ? esc(d.note) : Object.values(d.legs).map(L => `${L.bought ? (Number(L.bought) / 1e18).toFixed(3) : 0} ${esc(L.stock)} to ${L.recipients}`).join(' · ')}</span>${Object.values(d.legs || {}).find(L => L.swapTx) ? `<a href="${W.explorer('tx', Object.values(d.legs).find(L => L.swapTx).swapTx)}" target="_blank" rel="noopener">tx</a>` : '<span></span>'}</div>`).join('') : '<p class="muted">The first payday is on its way</p>'}</div>`;
+}
+
+function paintTop(body) {
+  const w = G.world;
+  if (!w) { body.innerHTML = '<p class="muted">Loading…</p>'; return; }
+  body.innerHTML = `<h3>Top islands today</h3><p class="muted">By power produced since 00:00 UTC</p><div class="list">${w.top.length ? w.top.map((t, i) => `<div class="line" ${t.address === (G.address || '').toLowerCase() ? 'style="border-color:var(--leaf2)"' : ''}><b>#${i + 1}</b><span>${W.short(t.address)}</span><b>${fmt(t.power)}</b></div>`).join('') : '<p class="muted">Nobody has collected today yet</p>'}</div>
+    <div class="kv"><div><i>Islands built</i><b>${w.islands}</b></div><div><i>Power today</i><b>${fmt(w.totals.power)}</b></div></div>`;
+}
+
+/* ------------------------------------------------ wallet */
+function paintWallet(s = W.state()) { const b = $('walletBtn'); b.textContent = s.address ? W.short(s.address) : 'Connect'; }
+$('walletBtn').onclick = async e => {
+  const s = W.state();
+  if (!s.address) return $('gateBtn').click();
+  const m = $('menu'); if (!m.hidden) { m.hidden = true; return; }
+  m.innerHTML = `<a href="${W.explorer('address', s.address)}" target="_blank" rel="noopener">View wallet ↗</a><button id="mOut">Sign out</button>`; m.hidden = false;
+  $('mOut').onclick = () => { m.hidden = true; forget(); W.disconnect(); };
+  e.stopPropagation();
+};
+addEventListener('click', e => { if (!e.target.closest('#menu') && !e.target.closest('#walletBtn')) $('menu').hidden = true; });
+$('gateBtn').onclick = async () => { const b = $('gateBtn'); b.disabled = true; try { await signIn(); } catch (e) { toast(e.shortMessage || e.message, 5000); showGate(); } b.disabled = false; };
+W.onChange(s => { paintWallet(s); if (G.address && s.address && s.address.toLowerCase() !== G.address.toLowerCase()) { G.session = null; G.address = null; G.data = null; showGate(); } });
+W.restore().then(async s => {
+  paintWallet(s);
+  if (s.address) { let t = null; try { t = localStorage.getItem(skey(s.address)); } catch {} if (t) { G.session = t; G.address = s.address; try { await loadIsland(); } catch { showGate(); } } else showGate(); }
+});
+setInterval(() => { if (G.session && !document.hidden) loadWorld(); }, 30000);
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+name: payday service
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch: {}
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Claim creator fees and run the daily payday
+        run: |
+          curl -sS --max-time 300 -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" https://rwaex.vercel.app/api/tick
