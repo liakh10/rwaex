@@ -62,8 +62,7 @@ a{color:inherit}
 .steps{padding:10px 24px 8px}
 .step{display:grid;grid-template-columns:86px 1fr;gap:16px;align-items:center;padding:12px 0;border-bottom:2px dashed var(--line)}
 .step:last-child{border-bottom:0}
-.step img{width:86px;height:86px;object-fit:contain;animation:bob 3.2s ease-in-out infinite}
-.step:nth-child(2) img{animation-delay:-.8s}.step:nth-child(3) img{animation-delay:-1.6s}.step:nth-child(4) img{animation-delay:-2.4s}
+.step img{width:86px;height:86px;object-fit:contain}
 .step h3{font-family:var(--disp);font-weight:400;font-size:22px;line-height:1.1}
 .step p{font-size:15px;font-weight:700;color:var(--muted);margin-top:4px;line-height:1.35}
 .ca{margin:4px 24px 22px;padding:14px;border-radius:20px;background:#fff;border:3px solid var(--line);text-align:center;cursor:pointer}
@@ -75,7 +74,6 @@ a{color:inherit}
 .card .go .btn{flex:1}
 @keyframes fade{from{opacity:0}}
 @keyframes card{from{opacity:0;transform:translateY(12px) scale(.94)}}
-@keyframes bob{50%{transform:translateY(-5px)}}
 
 @media (max-aspect-ratio: 1/1){
   .ui{padding-top:max(4.5vh,18px)}
