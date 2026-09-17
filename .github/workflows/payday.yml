@@ -1,7 +1,7 @@
 name: payday service
+# The timer was switched off on 2026-09-17: it was polling the public Robinhood RPC around the
+# clock for nothing. Run this by hand from the Actions tab when it is actually needed.
 on:
-  schedule:
-    - cron: '*/10 * * * *'
   workflow_dispatch: {}
 jobs:
   tick:
